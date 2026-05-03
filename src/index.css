@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-clinical-50: #ffffff;
+  --color-clinical-100: #f8fafc;
+  --color-clinical-200: rgba(0, 0, 0, 0.06);
+  --color-clinical-300: rgba(0, 0, 0, 0.1);
+  --color-clinical-400: rgba(0, 0, 0, 0.4);
+  --color-clinical-500: rgba(0, 0, 0, 0.5);
+  --color-clinical-600: rgba(0, 0, 0, 0.6);
+  --color-clinical-700: rgba(0, 0, 0, 0.7);
+  --color-clinical-800: #1e293b;
+  --color-clinical-900: #0f172a;
+  
+  --color-enor-primary: #ffffff;
+  --color-enor-accent: #0f172a;
+}
+
+@layer base {
+  body {
+    @apply bg-clinical-50 text-clinical-800 font-sans selection:bg-clinical-900 selection:text-white;
+    background-image: url('/background.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+  }
+}
+
+.blueprint-grid {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.glass-card {
+  @apply bg-clinical-100 border border-clinical-200;
+}
