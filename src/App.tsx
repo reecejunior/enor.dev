@@ -52,7 +52,7 @@ export default function App() {
       <nav className="fixed top-0 w-full z-50 h-20 bg-white/40 backdrop-blur-md border-b border-white/20 px-8 flex justify-between items-center">
         <div className="flex items-center gap-10">
           <div className="flex items-center gap-2">
-            <span className="font-bold tracking-tighter text-2xl uppercase text-clinical-900">Enor <span className="opacity-30 tracking-normal text-xl">//</span> System</span>
+            <span className="font-bold tracking-tighter text-2xl uppercase text-clinical-900">Enor <span className="opacity-30 tracking-normal text-xl">//</span> AI</span>
           </div>
           <div className="hidden md:flex gap-8">
             <a href="#blueprint" className="text-[10px] uppercase tracking-widest text-clinical-500 hover:text-clinical-900 transition-colors font-bold">Documentation</a>
