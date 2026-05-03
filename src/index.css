@@ -23,7 +23,7 @@
 @layer base {
   body {
     @apply bg-clinical-50 text-clinical-800 font-sans selection:bg-clinical-900 selection:text-white;
-    background-image: url('/background.jpg');
+    background-image: url('/background.png');
     background-attachment: fixed;
     background-size: cover;
   }
