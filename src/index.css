@@ -1,37 +1,221 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
+/* ─── Theme Tokens ─── */
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  
-  --color-clinical-50: #ffffff;
-  --color-clinical-100: #f8fafc;
-  --color-clinical-200: rgba(0, 0, 0, 0.06);
-  --color-clinical-300: rgba(0, 0, 0, 0.1);
-  --color-clinical-400: rgba(0, 0, 0, 0.4);
-  --color-clinical-500: rgba(0, 0, 0, 0.5);
-  --color-clinical-600: rgba(0, 0, 0, 0.6);
-  --color-clinical-700: rgba(0, 0, 0, 0.7);
-  --color-clinical-800: #1e293b;
-  --color-clinical-900: #0f172a;
-  
-  --color-enor-primary: #ffffff;
-  --color-enor-accent: #0f172a;
+
+  /* Light palette */
+  --color-doc-bg: #ffffff;
+  --color-doc-surface: #f8fafc;
+  --color-doc-surface-2: #f1f5f9;
+  --color-doc-border: #e2e8f0;
+  --color-doc-border-subtle: #f1f5f9;
+  --color-doc-text: #0f172a;
+  --color-doc-text-secondary: #475569;
+  --color-doc-text-muted: #94a3b8;
+  --color-doc-accent: #2563eb;
+  --color-doc-accent-soft: #dbeafe;
+  --color-doc-accent-hover: #1d4ed8;
+  --color-doc-code-bg: #0f172a;
+  --color-doc-code-surface: #1e293b;
+  --color-doc-code-text: #e2e8f0;
+  --color-doc-code-border: #334155;
+  --color-doc-success: #10b981;
+  --color-doc-warning: #f59e0b;
+  --color-doc-danger: #ef4444;
+
+  /* Syntax tokens */
+  --color-syn-keyword: #818cf8;
+  --color-syn-string: #34d399;
+  --color-syn-comment: #64748b;
+  --color-syn-function: #60a5fa;
+  --color-syn-number: #fbbf24;
+  --color-syn-property: #f472b6;
+  --color-syn-punctuation: #94a3b8;
+  --color-syn-url: #38bdf8;
+  --color-syn-flag: #c084fc;
 }
 
+/* ─── Base ─── */
 @layer base {
+  *,
+  *::before,
+  *::after {
+    @apply border-doc-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
-    @apply bg-clinical-50 text-clinical-800 font-sans selection:bg-clinical-900 selection:text-white;
-    background-image: url('/background.png');
-    background-attachment: fixed;
-    background-size: cover;
+    @apply bg-doc-bg text-doc-text font-sans leading-relaxed;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  ::selection {
+    @apply bg-doc-accent text-white;
+  }
+
+  /* ─── Dark mode overrides ─── */
+  .dark body,
+  .dark {
+    --color-doc-bg: #0b0f1a;
+    --color-doc-surface: #111827;
+    --color-doc-surface-2: #1e293b;
+    --color-doc-border: #1e293b;
+    --color-doc-border-subtle: #1e293b;
+    --color-doc-text: #f1f5f9;
+    --color-doc-text-secondary: #94a3b8;
+    --color-doc-text-muted: #64748b;
+    --color-doc-accent: #3b82f6;
+    --color-doc-accent-soft: #1e3a5f;
+    --color-doc-accent-hover: #60a5fa;
+    --color-doc-code-bg: #060a13;
+    --color-doc-code-surface: #0f172a;
+    --color-doc-code-border: #1e293b;
   }
 }
 
-.blueprint-grid {
+/* ─── Scrollbar ─── */
+@layer base {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-doc-border rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-doc-text-muted;
+  }
 }
 
-.glass-card {
-  @apply bg-clinical-100 border border-clinical-200;
+/* ─── Layout ─── */
+@layer utilities {
+  .doc-grid {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr) 440px;
+    min-height: 100vh;
+  }
+
+  @media (max-width: 1280px) {
+    .doc-grid {
+      grid-template-columns: 240px minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .doc-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}
+
+/* ─── Section Content Grid ─── */
+@layer utilities {
+  .doc-content-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 420px;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .doc-prose {
+    min-width: 0;
+    max-width: 680px;
+  }
+
+  .doc-code-pane {
+    min-width: 0;
+  }
+
+  @media (max-width: 1280px) {
+    .doc-content-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2rem;
+    }
+
+    .doc-code-pane {
+      position: static !important;
+    }
+
+    .doc-code-pane > .sticky {
+      position: static !important;
+    }
+  }
+}
+
+/* ─── Syntax Highlighting Classes ─── */
+@layer components {
+  .syn-keyword { color: var(--color-syn-keyword); }
+  .syn-string { color: var(--color-syn-string); }
+  .syn-comment { color: var(--color-syn-comment); font-style: italic; }
+  .syn-function { color: var(--color-syn-function); }
+  .syn-number { color: var(--color-syn-number); }
+  .syn-property { color: var(--color-syn-property); }
+  .syn-punctuation { color: var(--color-syn-punctuation); }
+  .syn-url { color: var(--color-syn-url); }
+  .syn-flag { color: var(--color-syn-flag); }
+}
+
+/* ─── Code block utilities ─── */
+@layer components {
+  .code-block {
+    @apply bg-doc-code-bg text-doc-code-text font-mono text-[13px] leading-[1.7] rounded-xl overflow-hidden;
+  }
+
+  .code-block-header {
+    @apply flex items-center justify-between px-4 py-2.5 bg-doc-code-surface border-b border-doc-code-border text-xs;
+  }
+
+  .code-block-body {
+    @apply p-4 overflow-x-auto;
+  }
+}
+
+/* ─── Smooth transitions for theme ─── */
+@layer base {
+  body,
+  .dark body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+/* ─── Animations ─── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease-out both;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.4s ease-out both;
 }
