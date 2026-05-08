@@ -1,0 +1,118 @@
+import { Clock, Brain } from 'lucide-react';
+
+<div className="doc-content-grid">
+  <div className="doc-prose">
+    <div className="mb-8 mt-5">
+      <EndpointBadge method="POST" path="/v1/outbound/validate" />
+      <h1 id="outbound-validation" className="text-3xl lg:text-4xl font-bold tracking-tight text-doc-text leading-tight mt-5 mb-4 scroll-mt-20">
+        Outbound Validation
+      </h1>
+      <p className="text-lg text-doc-text-secondary leading-relaxed">
+        Validate LLM outputs for clinical accuracy and intercept hallucinations before they reach patients.
+      </p>
+    </div>
+
+    <div className="flex flex-wrap gap-3 mb-8">
+      <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 text-sm font-medium border border-amber-500/15">
+        <Clock className="w-3.5 h-3.5" />
+        &lt;50ms latency
+      </div>
+      <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 text-sm font-medium border border-purple-500/15">
+        <Brain className="w-3.5 h-3.5" />
+        Edge-ML powered
+      </div>
+    </div>
+
+    ---
+
+    ## Description
+
+    This endpoint runs edge-ML entropy scoring on LLM-generated clinical text. It uses TensorFlow Lite classifiers and RAG-based validation to score clinical accuracy.
+
+    If the confidence score drops below **0.8**, the API returns a `flagged` status with a `route_to_human` action, automatically triggering a clinician fallback.
+
+    <Callout type="danger" title="Critical Safety Note">
+      When `action` is `route_to_human`, your application **must not** display the LLM output to the patient. Route to a qualified clinician for manual review.
+    </Callout>
+
+    ---
+
+    ## Request body
+
+    <ParamTable title="Parameters" params={[
+      { name: 'llm_output', type: 'string', required: true, description: 'The raw text output from OpenAI/Anthropic that needs clinical validation.' },
+      { name: 'clinical_threshold', type: 'float', required: false, description: 'Confidence threshold for flagging. Defaults to 0.8.' },
+    ]} />
+
+    ---
+
+    ## Response
+
+    <ParamTable title="Response fields" params={[
+      { name: 'status', type: 'string', required: true, description: 'Either "passed" or "flagged". Flagged responses should not be shown to patients.' },
+      { name: 'confidence_score', type: 'number', required: true, description: 'A value between 0 and 1. Scores below threshold trigger flagging.' },
+      { name: 'action', type: 'string', required: true, description: 'Recommended action: "none" for passed, "route_to_human" for flagged.' },
+      { name: 'reason', type: 'string', required: true, description: 'Human-readable explanation of flagging reason.' },
+    ]} />
+  </div>
+
+  <div className="doc-code-pane">
+    <div className="sticky top-20 space-y-6">
+      <Tabs title="Request" interactive endpoint="/v1/outbound/validate">
+        <Tab label="cURL">
+```bash
+curl -X POST \
+  https://api.enorai.com/v1/outbound/validate \
+  -H "Authorization: Bearer $ENORAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "llm_output": "Recommend 500mg Amoxicillin TID for 14 days.",
+    "clinical_threshold": 0.8
+  }'
+```
+        </Tab>
+        <Tab label="Python">
+```python
+from enorai import EnorAI
+
+client = EnorAI(api_key="ENORAI_API_KEY")
+
+result = client.outbound.validate(
+  llm_output="Recommend 500mg Amoxicillin TID...",
+  clinical_threshold=0.8
+)
+
+if result.status == "flagged":
+  print(f"Risk: {result.reason}")
+```
+        </Tab>
+      </Tabs>
+
+      <Tabs title="Response · 200 OK (Flagged)">
+        <Tab label="JSON">
+```json
+{
+  "status": "flagged",
+  "confidence_score": 0.64,
+  "action": "route_to_human",
+  "reason": "High entropy in dosage"
+}
+```
+        </Tab>
+      </Tabs>
+
+      <Tabs title="Response · 200 OK (Passed)">
+        <Tab label="JSON">
+```json
+{
+  "status": "passed",
+  "confidence_score": 0.94,
+  "action": "none",
+  "reason": "none"
+}
+```
+        </Tab>
+      </Tabs>
+    </div>
+  </div>
+</div>

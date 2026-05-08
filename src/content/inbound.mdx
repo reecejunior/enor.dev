@@ -1,0 +1,103 @@
+import { Clock } from 'lucide-react';
+
+<div className="doc-content-grid">
+  <div className="doc-prose">
+    <div className="mb-8 mt-5">
+      <EndpointBadge method="POST" path="/v1/inbound/tokenize" />
+      <h1 id="inbound-tokenization" className="text-3xl lg:text-4xl font-bold tracking-tight text-doc-text leading-tight mt-5 mb-4 scroll-mt-20">
+        Inbound Tokenization
+      </h1>
+      <p className="text-lg text-doc-text-secondary leading-relaxed">
+        Scrub and tokenize Protected Health Information from clinical text before it reaches any cloud LLM.
+      </p>
+    </div>
+
+    <div className="flex flex-wrap gap-3 mb-8">
+      <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-medium border border-emerald-500/15">
+        <Clock className="w-3.5 h-3.5" />
+        &lt;10ms latency
+      </div>
+    </div>
+
+    ---
+
+    ## Description
+
+    This endpoint uses a two-stage pipeline to detect and replace PHI entities:
+
+    1. **Local Regex Patterns** — High-speed pattern matching for SSNs, MRNs, phone numbers, and dates of birth.
+    2. **spaCy NER Model** — A fine-tuned Named Entity Recognition model trained on clinical corpora to identify patient names, physician names, and locations.
+
+    Detected entities are replaced with deterministic tokens (e.g., "Patient Forgive" → `[ID_001]`). Tokens are reversible only by the originating EnorAI instance.
+
+    <Callout type="warning" title="Important">
+      Tokenization runs locally. No raw PHI is transmitted to EnorAI cloud services.
+    </Callout>
+
+    ---
+
+    ## Request body
+
+    <ParamTable title="Parameters" params={[
+      { name: 'input_text', type: 'string', required: true, description: 'The raw clinical text containing PHI to be scrubbed and tokenized.' },
+      { name: 'fhir_context', type: 'string', required: false, description: 'Optional EHR system reference for FHIR R4 compliance audit linking.' },
+    ]} />
+
+    ---
+
+    ## Response
+
+    <ParamTable title="Response fields" params={[
+      { name: 'tokenized_text', type: 'string', required: true, description: 'Input text with PHI replaced by deterministic tokens.' },
+      { name: 'entities_found', type: 'integer', required: true, description: 'Number of PHI entities detected and tokenized.' },
+      { name: 'processing_time_ms', type: 'number', required: true, description: 'Processing time in milliseconds.' },
+      { name: 'token_map_id', type: 'string', required: true, description: 'UUID reference to stored token map for de-tokenization.' },
+    ]} />
+  </div>
+
+  <div className="doc-code-pane">
+    <div className="sticky top-20 space-y-6">
+      <Tabs title="Request" interactive endpoint="/v1/inbound/tokenize">
+        <Tab label="cURL">
+```bash
+curl -X POST \
+  https://api.enorai.com/v1/inbound/tokenize \
+  -H "Authorization: Bearer $ENORAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "input_text": "Patient Forgive presents with a fever of 39.2°C.",
+    "fhir_context": "Patient/p-28491"
+  }'
+```
+        </Tab>
+        <Tab label="Python">
+```python
+from enorai import EnorAI
+
+client = EnorAI(api_key="ENORAI_API_KEY")
+
+result = client.inbound.tokenize(
+  input_text="Patient Forgive presents with a fever.",
+  fhir_context="Patient/p-28491"
+)
+print(result.tokenized_text)
+```
+        </Tab>
+      </Tabs>
+
+      <Tabs title="Response · 200 OK">
+        <Tab label="JSON">
+```json
+{
+  "status": "success",
+  "scrubbed_text": "Patient [ID_001] presents with a fever of 39.2°C.",
+  "entities_found": 1,
+  "processing_time_ms": 6.2,
+  "token_map_id": "tmap_a1b2c3d4-e5f6-7890"
+}
+```
+        </Tab>
+      </Tabs>
+    </div>
+  </div>
+</div>

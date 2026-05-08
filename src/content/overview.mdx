@@ -1,0 +1,118 @@
+import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+<div className="doc-content-grid">
+  <div className="doc-prose">
+    <h1 id="introduction" className="text-4xl font-bold tracking-tight text-doc-text leading-[1.15] mb-5 scroll-mt-20">
+      Introduction to EnorAI
+    </h1>
+    
+    EnorAI is an API middleware that provides deterministic safety guardrails for healthcare AI applications. It solves the compliance and liability challenges that every health-tech team faces when integrating large language models.
+
+    ---
+
+    ## The liability problem
+
+    The integration of LLMs in clinical settings has introduced significant liability risks:
+
+    - <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-500/10 text-red-500 text-[11px] font-bold shrink-0 mt-0.5">!</span> **51% of triage cases** — ChatGPT recommended "wait and see" for conditions requiring immediate clinical intervention.
+    - <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-500/10 text-amber-500 text-[11px] font-bold shrink-0 mt-0.5">!</span> **71% of healthcare workers** admitted to inputting patient data into commercial LLMs, creating HIPAA violations.
+
+    <Callout type="warning" title="Why this matters">
+      Without deterministic safety rails, every LLM response in a clinical context is a potential liability event.
+    </Callout>
+
+    ---
+
+    ## Architecture
+
+    EnorAI sits between your application and any cloud LLM provider:
+
+    <div className="rounded-xl border border-doc-border overflow-hidden mb-8 mt-6">
+      <div className="bg-doc-surface px-6 py-4 border-b border-doc-border">
+        <h4 className="text-[13px] font-semibold text-doc-text">Request / Response Flow</h4>
+      </div>
+      <div className="px-6 py-6 bg-doc-bg">
+        <div className="flex flex-col sm:flex-row items-center gap-3 text-[13px] font-medium">
+          <div className="px-4 py-2.5 rounded-lg bg-doc-surface-2 text-doc-text border border-doc-border whitespace-nowrap">User Input</div>
+          <ArrowRight className="w-4 h-4 text-doc-text-muted rotate-90 sm:rotate-0 shrink-0" />
+          <div className="px-4 py-2.5 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 whitespace-nowrap">Inbound API (Scrub)</div>
+          <ArrowRight className="w-4 h-4 text-doc-text-muted rotate-90 sm:rotate-0 shrink-0" />
+          <div className="px-4 py-2.5 rounded-lg bg-doc-surface-2 text-doc-text border border-doc-border whitespace-nowrap">Cloud LLM</div>
+          <ArrowRight className="w-4 h-4 text-doc-text-muted rotate-90 sm:rotate-0 shrink-0" />
+          <div className="px-4 py-2.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 whitespace-nowrap">Outbound API (Validate)</div>
+          <ArrowRight className="w-4 h-4 text-doc-text-muted rotate-90 sm:rotate-0 shrink-0" />
+          <div className="px-4 py-2.5 rounded-lg bg-doc-surface-2 text-doc-text border border-doc-border whitespace-nowrap">User Output</div>
+        </div>
+      </div>
+    </div>
+
+    <Callout type="info" title="Two engines, one API">
+      The Inbound Engine handles PHI scrubbing (&lt;10ms). The Outbound Engine handles hallucination detection (&lt;50ms).
+    </Callout>
+
+    ---
+
+    ## Next steps
+
+    <div className="grid sm:grid-cols-2 gap-3 mt-6">
+      <Link to="/docs/api-reference/authentication" className="group p-4 rounded-xl border border-doc-border hover:border-doc-text-muted/30 transition-all">
+        <h4 className="text-[14px] font-semibold text-doc-text mb-1 group-hover:text-doc-link transition-colors">Authentication →</h4>
+        <p className="text-[13px] text-doc-text-muted m-0">Set up your API keys</p>
+      </Link>
+      <Link to="/docs/api-reference/inbound" className="group p-4 rounded-xl border border-doc-border hover:border-doc-text-muted/30 transition-all">
+        <h4 className="text-[14px] font-semibold text-doc-text mb-1 group-hover:text-doc-link transition-colors">Inbound Engine →</h4>
+        <p className="text-[13px] text-doc-text-muted m-0">Start scrubbing PHI</p>
+      </Link>
+    </div>
+  </div>
+
+  <div className="doc-code-pane">
+    <div className="sticky top-20 space-y-6">
+      <Tabs title="Installation">
+        <Tab label="pip">
+```bash
+# Install the EnorAI SDK
+pip install enorai-sdk
+```
+        </Tab>
+        <Tab label="npm">
+```bash
+# Install the EnorAI SDK
+npm install enorai-sdk
+```
+        </Tab>
+      </Tabs>
+
+      <Tabs title="Quick start">
+        <Tab label="Python">
+```python
+import os
+from enorai import EnorAI
+
+client = EnorAI(
+  api_key=os.environ["ENORAI_API_KEY"],
+  region="af-south-1"
+)
+
+status = client.health_check()
+print(status)
+```
+        </Tab>
+        <Tab label="Node.js">
+```javascript
+import EnorAI from 'enorai-sdk';
+
+const client = new EnorAI({
+  apiKey: process.env.ENORAI_API_KEY,
+  region: 'af-south-1'
+});
+
+const status = await client.healthCheck();
+console.log(status);
+```
+        </Tab>
+      </Tabs>
+    </div>
+  </div>
+</div>

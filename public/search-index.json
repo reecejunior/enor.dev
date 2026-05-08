@@ -1,0 +1,79 @@
+[
+  {
+    "path": "/docs/api-reference/authentication",
+    "title": "Authentication",
+    "description": "Authentication               The EnorAI API uses API keys for authentication. Create, manage, and rotate your API keys from the EnorAI Dashboard.     ...",
+    "category": "Authentication",
+    "content": "Authentication               The EnorAI API uses API keys for authentication. Create, manage, and rotate your API keys from the EnorAI Dashboard.     ---"
+  },
+  {
+    "path": "/docs/api-reference/authentication#api-keys",
+    "title": "API keys",
+    "description": "Remember that your API key is a secret! Do not share it with others or expose it in any client-side code (browsers, mobile apps). API keys should be s...",
+    "category": "Authentication",
+    "content": "Remember that your API key is a secret! Do not share it with others or expose it in any client-side code (browsers, mobile apps). API keys should be securely loaded from an environment variable or key management service on the server.     API keys should be provided via HTTP Bearer authentication. Pass your API key in the Authorization header of every request:            Authorization: Bearer ENORAI_API_KEY                 Ensure your API keys are never committed to client-side code, version control, or public repositories. Use environment variables or a secrets manager.          ---"
+  },
+  {
+    "path": "/docs/api-reference/authentication#environments",
+    "title": "Environments",
+    "description": "EnorAI provides separate API keys for sandbox and production environments:                                             Environment             Key Pre...",
+    "category": "Authentication",
+    "content": "EnorAI provides separate API keys for sandbox and production environments:                                             Environment             Key Prefix             Usage                                                     Sandbox             enor_test_             Development and testing                                   Production             enor_live_             Live clinical deployments                                            Sandbox keys are limited to 100 requests/minute. Production keys support up to 10,000 requests/minute with burst capacity."
+  },
+  {
+    "path": "/docs/api-reference/inbound",
+    "title": "Inbound Tokenization",
+    "description": "Inbound Tokenization                       Scrub and tokenize Protected Health Information from clinical text before it reaches any cloud LLM.        ...",
+    "category": "Inbound Tokenization",
+    "content": "Inbound Tokenization                       Scrub and tokenize Protected Health Information from clinical text before it reaches any cloud LLM.                                          &lt;10ms latency                 ---"
+  },
+  {
+    "path": "/docs/api-reference/inbound#description",
+    "title": "Description",
+    "description": "This endpoint uses a two-stage pipeline to detect and replace PHI entities:     1. Local Regex Patterns — High-speed pattern matching for SSNs, MRNs, ...",
+    "category": "Inbound Tokenization",
+    "content": "This endpoint uses a two-stage pipeline to detect and replace PHI entities:     1. Local Regex Patterns — High-speed pattern matching for SSNs, MRNs, phone numbers, and dates of birth.     2. spaCy NER Model — A fine-tuned Named Entity Recognition model trained on clinical corpora to identify patient names, physician names, and locations.     Detected entities are replaced with deterministic tokens (e.g., \"Patient Forgive\" → [ID_001]). Tokens are reversible only by the originating EnorAI instance.            Tokenization runs locally. No raw PHI is transmitted to EnorAI cloud services.          ---"
+  },
+  {
+    "path": "/docs/api-reference/outbound",
+    "title": "Outbound Validation",
+    "description": "Outbound Validation                       Validate LLM outputs for clinical accuracy and intercept hallucinations before they reach patients.         ...",
+    "category": "Outbound Validation",
+    "content": "Outbound Validation                       Validate LLM outputs for clinical accuracy and intercept hallucinations before they reach patients.                                          &lt;50ms latency                                Edge-ML powered                 ---"
+  },
+  {
+    "path": "/docs/api-reference/outbound#description",
+    "title": "Description",
+    "description": "This endpoint runs edge-ML entropy scoring on LLM-generated clinical text. It uses TensorFlow Lite classifiers and RAG-based validation to score clini...",
+    "category": "Outbound Validation",
+    "content": "This endpoint runs edge-ML entropy scoring on LLM-generated clinical text. It uses TensorFlow Lite classifiers and RAG-based validation to score clinical accuracy.     If the confidence score drops below 0.8, the API returns a flagged status with a route_to_human action, automatically triggering a clinician fallback.            When action is route_to_human, your application must not display the LLM output to the patient. Route to a qualified clinician for manual review.          ---"
+  },
+  {
+    "path": "/docs/overview",
+    "title": "Introduction to EnorAI",
+    "description": "Introduction to EnorAI               EnorAI is an API middleware that provides deterministic safety guardrails for healthcare AI applications. It solv...",
+    "category": "Introduction to EnorAI",
+    "content": "Introduction to EnorAI               EnorAI is an API middleware that provides deterministic safety guardrails for healthcare AI applications. It solves the compliance and liability challenges that every health-tech team faces when integrating large language models.     ---"
+  },
+  {
+    "path": "/docs/overview#the-liability-problem",
+    "title": "The liability problem",
+    "description": "The integration of LLMs in clinical settings has introduced significant liability risks:     - ! 51% of triage cases — ChatGPT recommended \"wait and s...",
+    "category": "Introduction to EnorAI",
+    "content": "The integration of LLMs in clinical settings has introduced significant liability risks:     - ! 51% of triage cases — ChatGPT recommended \"wait and see\" for conditions requiring immediate clinical intervention.     - ! 71% of healthcare workers admitted to inputting patient data into commercial LLMs, creating HIPAA violations.            Without deterministic safety rails, every LLM response in a clinical context is a potential liability event.          ---"
+  },
+  {
+    "path": "/docs/overview#architecture",
+    "title": "Architecture",
+    "description": "EnorAI sits between your application and any cloud LLM provider:                     Request / Response Flow                                  User Inp...",
+    "category": "Introduction to EnorAI",
+    "content": "EnorAI sits between your application and any cloud LLM provider:                     Request / Response Flow                                  User Input                      Inbound API (Scrub)                      Cloud LLM                      Outbound API (Validate)                      User Output                                 The Inbound Engine handles PHI scrubbing (&lt;10ms). The Outbound Engine handles hallucination detection (&lt;50ms).          ---"
+  },
+  {
+    "path": "/docs/overview#next-steps",
+    "title": "Next steps",
+    "description": "Authentication →         Set up your API keys                       Inbound Engine →         Start scrubbing PHI",
+    "category": "Introduction to EnorAI",
+    "content": "Authentication →         Set up your API keys                       Inbound Engine →         Start scrubbing PHI"
+  }
+]
