@@ -1,6 +1,5 @@
 [
-  {
-    "path": "/docs/api-reference/authentication",
+  {    "path": "/docs/api-reference/authentication",
     "title": "Authentication",
     "description": "Authentication               The EnorAI API uses API keys for authentication. Create, manage, and rotate your API keys from the EnorAI Dashboard.     ...",
     "category": "Authentication",
