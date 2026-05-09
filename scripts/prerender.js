@@ -15,6 +15,7 @@ const routesToPrerender = [
   '/',
   '/privacy',
   '/terms',
+  '/docs',
   '/docs/overview',
   '/docs/api-reference/authentication',
   '/docs/api-reference/inbound',
